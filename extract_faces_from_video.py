@@ -19,7 +19,7 @@ class Face:
         self.person = None
 
 
-def batch_eval(input_data, model, batch_size=100):
+def batch_eval(input_data, model, batch_size=16):
     output_data = []
     for idx in range(len(input_data) // batch_size + 1):
         output_data.extend(
