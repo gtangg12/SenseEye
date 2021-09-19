@@ -35,6 +35,7 @@ def detect_faces(frames):
                   keep_all=True,
                   post_process=False,
                   thresholds=[0.6, 0.75, 0.9])
+    mtcnn.cuda()
 
     faces = []
     for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
@@ -47,13 +48,14 @@ def detect_faces(frames):
 
 def compute_embeddings(faces):
     resnet = InceptionResnetV1(pretrained='vggface2').double().eval()
+    resnet.cuda()
 
     crops = np.array([face.crop for face in faces])
     crops = (crops - 127.5) / 128.0
-    crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)))
+    crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)), device='cuda:0')
 
     for face, embedding in zip(faces, batch_eval(crops, resnet)):
-        face.embedding = embedding.detach().numpy()
+        face.embedding = embedding.detach().cpu().numpy()
 
 
 def tag_faces(faces, face_db):
@@ -87,7 +89,7 @@ def extract_video_frames(video_path):
         success, frame = video_cap.read()
         if not success:
             break
-        frames.append(frame)
+        frames.append(frame[:,:,::-1]) #rgb to make colab compatible
 
     return np.array(frames)
 
