@@ -83,7 +83,7 @@ class FastFaceDB:
             timestamp,
             self.face_db.average_embeddings[self.face_db.person_index[person]]
         )
-
+        
     def search_face(self, face):
         min_distance = 999999
         best_person = None
