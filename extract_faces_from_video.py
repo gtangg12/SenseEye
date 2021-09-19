@@ -39,7 +39,7 @@ def detect_faces(frames):
     mtcnn.cuda()
 
     faces = []
-    for frame_number, crops in enumerate(batch_eval(torch.tensor(frames, device='cuda:0'), mtcnn)):
+    for frame_number, crops in enumerate(frames, mtcnn):
         if crops is not None:
             for crop in crops:
                 formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
