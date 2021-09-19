@@ -38,18 +38,11 @@ def detect_faces(frames):
 
     faces = []
     for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
-<<<<<<< HEAD
         if crops == None:
             continue
         for crop in crops:
             formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
             faces.append(Face(frame_number, formatted_crop))
-=======
-        if crops is not None:
-            for crop in crops:
-                formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
-                faces.append(Face(frame_number, formatted_crop))
->>>>>>> b491f7759a604bb5e6344d5f7521e9a26dd953d6
 
     return faces
 
@@ -137,3 +130,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    

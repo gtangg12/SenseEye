@@ -39,17 +39,12 @@ class HeartAttributes():
             self.rgb_ma += (rgb - self.rgb_ma) / len(self.rgb_history)
             self.rgb_msa += (rgb ** 2 - self.rgb_msa) / len(self.rgb_history)
         else:
-<<<<<<< HEAD
-            self.rgb_ma += (rgb - self.rgb_history[-self.WINDOW_LEN * self.FPS]) / self.rgb_history
-
-        return self.get_signal(rgb)
-=======
             self.rgb_ma += (rgb - self.rgb_history[-(self.WINDOW_LEN * self.FPS)-1]) / (self.WINDOW_LEN * self.FPS)
             self.rgb_msa += (rgb ** 2 - self.rgb_history[-(self.WINDOW_LEN * self.FPS)-1] ** 2) / (self.WINDOW_LEN * self.FPS)
 
         self.mas.append(self.rgb_ma.copy())
         self.msas.append(self.rgb_msa.copy())
-        
+
         sig = self.get_signal(rgb)
 
         self.sig_history.append(sig)
@@ -67,8 +62,7 @@ class HeartAttributes():
 
     def is_acceptable(self, rgb):
         return (len(self.rgb_history) < 300) or not ((rgb - self.rgb_ma)**2 > 6*(self.rgb_msa - self.rgb_ma**2)).any() #5% statistical test
->>>>>>> b491f7759a604bb5e6344d5f7521e9a26dd953d6
-
+        
     def get_signal(self, rgb):
         """
         Use Skin Tone Normalization to process RGB array signal in order to control
@@ -79,22 +73,14 @@ class HeartAttributes():
 
         # normalize for illumination by converting signal into what it would look like in white light
         rgb_st = np.array([0.7682, 0.5121, 0.3841]) #average skin tone
-<<<<<<< HEAD
-        rgb_w = rgb * rgb_st[None, :] / self.rgb_ma
-
-=======
         rgb_w = rgb * rgb_st / self.rgb_ma
-        
->>>>>>> b491f7759a604bb5e6344d5f7521e9a26dd953d6
+
         # calculate chrominance signals, which removes noise due to specular reflection
         X = (rgb_w[0] - rgb_w[1]) / (rgb_st[0] - rgb_st[1])
         Y = (rgb_w[0] + rgb_w[1] - 2*rgb_w[2]) / (rgb_st[0] + rgb_st[1] - 2*rgb_st[2])
 
         # calculate signal X/Y which cancels out brightness effects
         return X/Y
-<<<<<<< HEAD
-=======
 
     def get_fourier(self):
         return np.absolute(self.ft)
->>>>>>> b491f7759a604bb5e6344d5f7521e9a26dd953d6
