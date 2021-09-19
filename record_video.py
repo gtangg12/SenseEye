@@ -7,7 +7,7 @@ def parse_args():
 
     parser.add_argument('-o', '--output_path', default='output.mp4', type=str,
         help='')
-    parser.add_argument('-n', '--num_frames', default=1500, type=int,
+    parser.add_argument('-n', '--num_frames', default=2000, type=int,
         help='');
     parser.add_argument('--fps', default=24, type=int,
         help='')
@@ -18,7 +18,7 @@ def parse_args():
 def main():
     args = parse_args()
 
-    video_cap = cv2.VideoCapture(1)
+    video_cap = cv2.VideoCapture(0)
     cap_prop = lambda x : int(video_cap.get(x))
 
     width, height = \

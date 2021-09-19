@@ -1,8 +1,8 @@
 import numpy as np
 class HeartAttributes():
     """
-    Retains sliding window attributes for heart rate detection. Represents the attributes requires to calculate the heart 
-    rate for one person in sliding-window format. 
+    Retains sliding window attributes for heart rate detection. Represents the attributes requires to calculate the heart
+    rate for one person in sliding-window format.
     """
 
     WINDOW_LEN = 6 #moving window size
@@ -32,7 +32,7 @@ class HeartAttributes():
             self.rgb_ma += (rgb - self.rgb_ma) / self.rgb_history
         else:
             self.rgb_ma += (rgb - self.rgb_history[-self.WINDOW_LEN * self.FPS]) / self.rgb_history
-        
+
         return self.get_signal(rgb)
 
     def get_signal(self, rgb):
@@ -46,7 +46,7 @@ class HeartAttributes():
         # normalize for illumination by converting signal into what it would look like in white light
         rgb_st = np.array([0.7682, 0.5121, 0.3841]) #average skin tone
         rgb_w = rgb * rgb_st[None, :] / self.rgb_ma
-        
+
         # calculate chrominance signals, which removes noise due to specular reflection
         X = (rgb_w[0] - rgb_w[1]) / (rgb_st[0] - rgb_st[1])
         Y = (rgb_w[0] + rgb_w[1] - 2*rgb[2]) / (rgb_st[0] + rgb_st[1] - 2*rgb_st[2])

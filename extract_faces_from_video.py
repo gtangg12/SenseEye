@@ -8,7 +8,7 @@ from facenet_pytorch import MTCNN, InceptionResnetV1
 from face_db import Person, FaceDB
 
 
-video_path = 'george1.mp4'
+video_path = 'test_videos/pair.mp4'
 
 
 class Face:
@@ -38,6 +38,8 @@ def detect_faces(frames):
 
     faces = []
     for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
+        if crops == None:
+            continue
         for crop in crops:
             formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
             faces.append(Face(frame_number, formatted_crop))
@@ -66,7 +68,7 @@ def build_face_db(reference_data):
 
     for person, frames in reference_data.items():
         faces = detect_faces(frames[:10])
-        faces = compute_embeddings(faces)
+        compute_embeddings(faces)
         for face in faces:
             face_db.update_person(face, person)
     '''
@@ -107,8 +109,11 @@ def main():
     start = time.time()
 
     frames = extract_video_frames(video_path)
-    faces = detect_faces(frames[:20])
+    print(time.time() - start)
+    faces = detect_faces(frames[:100])
+    print(time.time() - start)
     compute_embeddings(faces)
+    print(time.time() - start)
     tag_faces(faces, face_db)
 
     print(time.time() - start)
@@ -117,7 +122,7 @@ def main():
         if face.person != None:
             print(face.person.name)
         else:
-            print("FK")
+            print("None")
         cv2.imshow('Frame', face.crop)
         cv2.waitKey(0)
 
