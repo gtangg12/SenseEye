@@ -66,7 +66,7 @@ def build_face_db(reference_data):
 
     for person, frames in reference_data.items():
         faces = detect_faces(frames[:10])
-        faces = compute_embeddings(faces)
+        compute_embeddings(faces)
         for face in faces:
             face_db.update_person(face, person)
     '''
