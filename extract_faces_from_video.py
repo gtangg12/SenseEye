@@ -19,7 +19,7 @@ class Face:
         self.person = None
 
 
-def batch_eval(input_data, model, batch_size=16):
+def batch_eval(input_data, model, batch_size=100):
     output_data = []
     for idx in range(len(input_data) // batch_size + 1):
         output_data.extend(
@@ -34,14 +34,16 @@ def detect_faces(frames):
                   margin=32,
                   keep_all=True,
                   post_process=False,
-                  thresholds=[0.6, 0.75, 0.9])
+                  thresholds=[0.6, 0.75, 0.9],
+                  device='cuda:0')
     mtcnn.cuda()
 
     faces = []
-    for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
-        for crop in crops:
-            formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
-            faces.append(Face(frame_number, formatted_crop))
+    for frame_number, crops in enumerate(batch_eval(torch.tensor(frames, device='cuda:0'), mtcnn)):
+        if crops is not None:
+            for crop in crops:
+                formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
+                faces.append(Face(frame_number, formatted_crop))
 
     return faces
 
