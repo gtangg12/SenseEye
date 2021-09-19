@@ -56,7 +56,7 @@ def compute_embeddings(faces):
     crops = (crops - 127.5) / 128.0
     crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)), device='cuda:0')
 
-    for face, embedding in zip(faces, batch_eval(crops, resnet, batch_size=8)):
+    for face, embedding in zip(faces, batch_eval(crops, resnet, batch_size=1)):
         face.embedding = embedding.detach().cpu().numpy()
 
 
