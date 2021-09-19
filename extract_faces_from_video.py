@@ -38,24 +38,32 @@ def detect_faces(frames):
 
     faces = []
     for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
+<<<<<<< HEAD
         if crops == None:
             continue
         for crop in crops:
             formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
             faces.append(Face(frame_number, formatted_crop))
+=======
+        if crops is not None:
+            for crop in crops:
+                formatted_crop = np.transpose(crop.numpy(), (1, 2, 0)).astype(np.uint8)
+                faces.append(Face(frame_number, formatted_crop))
+>>>>>>> b491f7759a604bb5e6344d5f7521e9a26dd953d6
 
     return faces
 
 
 def compute_embeddings(faces):
     resnet = InceptionResnetV1(pretrained='vggface2').double().eval()
+    resnet.cuda()
 
     crops = np.array([face.crop for face in faces])
     crops = (crops - 127.5) / 128.0
     crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)))
 
-    for face, embedding in zip(faces, batch_eval(crops, resnet)):
-        face.embedding = embedding.detach().numpy()
+    for face, embedding in zip(faces, batch_eval(crops, resnet, batch_size=1)):
+        face.embedding = embedding.detach().cpu().numpy()
 
 
 def tag_faces(faces, face_db):
@@ -89,7 +97,7 @@ def extract_video_frames(video_path):
         success, frame = video_cap.read()
         if not success:
             break
-        frames.append(frame)
+        frames.append(frame[:,:,::-1]) #rgb to make colab compatible
 
     return np.array(frames)
 
@@ -100,8 +108,8 @@ def main():
     np.set_printoptions(linewidth=10000000)
 
     reference_data = {
-        Person('George'): extract_video_frames('reference_videos/george.mp4')[:20],
-        Person('William'): extract_video_frames('reference_videos/william.mp4')[:20],
+        Person('George'): extract_video_frames('george.mp4')[:20],
+        Person('William'): extract_video_frames('william.mp4')[:20],
     }
 
     face_db = build_face_db(reference_data)
