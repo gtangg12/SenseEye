@@ -34,9 +34,7 @@ def detect_faces(frames):
                   margin=32,
                   keep_all=True,
                   post_process=False,
-                  thresholds=[0.6, 0.75, 0.9],
-                  device='cuda:0')
-    mtcnn.cuda()
+                  thresholds=[0.6, 0.75, 0.9])
 
     faces = []
     for frame_number, crops in enumerate(batch_eval(frames, mtcnn)):
@@ -54,7 +52,7 @@ def compute_embeddings(faces):
 
     crops = np.array([face.crop for face in faces])
     crops = (crops - 127.5) / 128.0
-    crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)), device='cuda:0')
+    crops = torch.tensor(np.transpose(crops, (0, 3, 1, 2)))
 
     for face, embedding in zip(faces, batch_eval(crops, resnet, batch_size=1)):
         face.embedding = embedding.detach().cpu().numpy()
@@ -102,8 +100,8 @@ def main():
     np.set_printoptions(linewidth=10000000)
 
     reference_data = {
-        Person('George'): extract_video_frames('reference_videos/george.mp4')[:20],
-        Person('William'): extract_video_frames('reference_videos/william.mp4')[:20],
+        Person('George'): extract_video_frames('george.mp4')[:20],
+        Person('William'): extract_video_frames('william.mp4')[:20],
     }
 
     face_db = build_face_db(reference_data)
