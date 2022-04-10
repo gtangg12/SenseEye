@@ -1,3 +1,5 @@
+1st Place HackMIT 2021
+
 # SenseEye
 
 Being able to extract heart rate contactless with an RGB camera under generalized conditions (e.g. robust to face view, motion, illumination, can handle many people in the scene) is a crucial keystone to solving many problems, with applications ranging from elderly monitoring to security. We propose and flesh out the foundations of SenseEye to make headway on this issue. 
